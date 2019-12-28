@@ -135,7 +135,7 @@ class DoublyLinkedList:
                 self.tail.next = None
             node.delete()
             self.add_to_head(val)
-            self.length -= 1
+            self.length -= 1 #to handle addtohead adding one
         else:
             print('ERROR: This is already the head node')
 
@@ -150,7 +150,7 @@ class DoublyLinkedList:
                 self.head.prev = None
             node.delete()
             self.add_to_tail(val)
-            self.length -= 1
+            self.length -= 1 # to handle addtotail adding 1
         else:
             print('ERROR: This is already the tail node')
 
@@ -180,7 +180,7 @@ class DoublyLinkedList:
         elif self.length < 2:
             return self.head.value
         else:
-            while cur.next:
+            while cur.next is not None:
                 if cur.value > max:
                     max = cur.value
                 cur = cur.next
