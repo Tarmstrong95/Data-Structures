@@ -12,7 +12,7 @@ class LRUCache:
         self.limit = limit #max cache size
         self.storage = {} #fast access to nodes
         self.size = 0 #size of cache list
-        self.list = DoublyLinkedList() #list
+        self.list = DoublyLinkedList() #cache
 
 
     """
@@ -22,8 +22,33 @@ class LRUCache:
     Returns the value associated with the key or None if the
     key-value pair doesn't exist in the cache.
     """
+    # what is "the order"
+    # the value is the node
+    # what is the point in having an LRU list as a storage dict and..
+    # .. a LRU list in DLL format
     def get(self, key):
-        pass
+        # node default none
+        node = None
+
+        # traverse storage
+        for keyi, val in self.storage.items():
+            if keyi == key:
+                node = val
+
+        # if node is found
+        if node is not None:
+            del self.storage[key]
+            self.storage.update({key: node})
+        
+        # return node as node or none
+        return node
+
+        #TODO
+        # treverse storage for key
+        # if found, copy key, del key, move key to end
+        # if found, return value, else none
+
+
 
     """
     Adds the given key-value pair to the cache. The newly-
@@ -36,4 +61,36 @@ class LRUCache:
     the newly-specified value.
     """
     def set(self, key, value):
-        pass
+        # node default to node or none
+        node = self.get(key)
+
+        # if node is found
+        if node is not None:
+            # del node from cache
+            self.list.delete(node)
+            # add node to tail of cache
+            node.value = value
+            self.list.add_to_tail(node.value)
+        
+        # if no node is found
+        elif node is None:
+            # check for size to limit
+            if self.size == self.limit:
+                # del head from cache and storage
+                self.list.remove_from_head()
+                del self.storage[list(self.storage.keys())[0]]
+
+            # add node to tail of cache and storage
+            self.list.add_to_tail(value)
+            self.storage.update({key: self.list.tail})
+            
+        # update size to cache size
+        self.size = self.list.length
+
+        #TODO
+        # if key exists in cache
+            # move key value to end
+        # else
+            # check cache length, remove oldest if at max
+            # add value to end
+
