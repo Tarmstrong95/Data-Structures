@@ -22,31 +22,19 @@ class LRUCache:
     Returns the value associated with the key or None if the
     key-value pair doesn't exist in the cache.
     """
-    # what is "the order"
-    # the value is the node
-    # what is the point in having an LRU list as a storage dict and..
-    # .. a LRU list in DLL format
+    
     def get(self, key):
-        # node default none
-        node = None
-
-        # traverse storage
-        for keyi, val in self.storage.items():
-            if keyi == key:
-                node = val
-
-        # if node is found
-        if node is not None:
-            del self.storage[key]
-            self.storage.update({key: node})
-        
-        # return node as node or none
-        return node
-
         #TODO
-        # treverse storage for key
-        # if found, copy key, del key, move key to end
-        # if found, return value, else none
+        # get value from key from storage
+        # move key value to end of cache
+        # return value of key
+
+        node = None # default node to none
+        if self.storage.get(key, None) is not None: # if we have a key
+            node = self.storage[key] # set node to keys value == node
+            self.list.move_to_end(node) # move node to tail of cache
+        return node.value if node is not None else None # if not none, return the value
+
 
 
 
@@ -61,36 +49,26 @@ class LRUCache:
     the newly-specified value.
     """
     def set(self, key, value):
-        # node default to node or none
-        node = self.get(key)
-
-        # if node is found
-        if node is not None:
-            # del node from cache
-            self.list.delete(node)
-            # add node to tail of cache
-            node.value = value
-            self.list.add_to_tail(node.value)
-        
-        # if no node is found
-        elif node is None:
-            # check for size to limit
-            if self.size == self.limit:
-                # del head from cache and storage
-                self.list.remove_from_head()
-                del self.storage[list(self.storage.keys())[0]]
-
-            # add node to tail of cache and storage
-            self.list.add_to_tail(value)
-            self.storage.update({key: self.list.tail})
-            
-        # update size to cache size
-        self.size = self.list.length
-
         #TODO
-        # if key exists in cache
-            # move key value to end
-        # else
-            # check cache length, remove oldest if at max
-            # add value to end
+        # if size == limit
+        #   if the key is not in the storage
+        #       delete the cache head and from stor
+        #       add the key to storage
+        #       add the to cache tail                          <-|
+        #   if the key is in the storage                         |
+        #       update the stor key-value                        | can be consolidated
+        #       del the old value, add it to the tail in cache <-|
+
+        # if maxed out
+        if self.size == self.limit:
+            if self.storage.get(key, None) is not None: # if we have a key in storage 
+                self.list.delete(self.storage[key]) # delete from list
+            else: # if we dont have a key - means we're adding a new key
+                k,v = list(self.storage.keys()), list(self.storage.values()) # create lists
+                del self.storage[k [ v.index( self.list.head ) ] ] # del key from storage
+                self.list.remove_from_head() # del cache head
+        
+        self.list.add_to_tail(value)  # add to tail of cache
+        self.storage[key] = self.list.tail # add new key value to stor   
+        self.size = self.list.length #update length
 
